@@ -1,0 +1,16 @@
+table {
+    border: 5px solid #cccccc;
+}
+
+.span-1 {
+    width: 90px;
+}
+
+.span-2 {
+    width: 180px;
+}
+
+.main-calc-text {
+    font-size: 48px;
+    font-weight: bold;
+}

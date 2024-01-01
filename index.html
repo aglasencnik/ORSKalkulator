@@ -3,16 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kalkulator</title>
-    <link rel="stylesheet" href="bootstrap.min.css">
+    <title>ORS Calculator</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/stylesheet.css">
 </head>
-<body class="bg-secondary">
+<body>
 
-<div id="calculator">
-
+<div class="container d-flex align-items-center justify-content-center vh-100">
+    <table>
+        <tbody>
+        <tr>
+            <td colspan="7">
+                <div class="alert alert-secondary text-end mb-0 pb-0 g-0">
+                    <p>
+                        <span id="lblDisplay"> 0 = </span>
+                    </p>
+                    <hr>
+                    <p class="my-0 py-0 gy-0">
+                        <span id="lblResult" class="my-0 py-0 main-calc-text">0</span>
+                    </p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center" colspan="2">
+                <button id="btnArithmetic" class="btn btn-lg btn-dark span-2">Aritmetika</button>
+            </td>
+            <td class="text-center" colspan="2">
+                <button id="btnConvert" class="btn btn-lg btn-dark span-2">Pretvorba</button>
+            </td>
+            <td class="text-center" colspan="2">
+                <button id="btnLogicGates" class="btn btn-lg btn-dark span-2">Logična vrata</button>
+            </td>
+            <td class="text-center">
+                <button id="btnClear" class="btn btn-lg btn-dark span-1">Clr</button>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center" colspan="2">
+                <button id="btnArithmeticFile" class="btn btn-lg btn-dark span-2">Aritm. Dat.</button>
+            </td>
+            <td class="text-center" colspan="2">
+                <button id="btnConvertFile" class="btn btn-lg btn-dark span-2">Pretv. Dat.</button>
+            </td>
+            <td class="text-center" colspan="2">
+                <button id="btnLogicGatesFile" class="btn btn-lg btn-dark span-2">Log. Dat.</button>
+            </td>
+            <td class="text-center">
+                <button id="btnBackSpace" class="btn btn-lg btn-dark span-1">⌫</button>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">
+                <button id="btnBin" class="btn btn-lg btn-dark span-1">BIN</button>
+            </td>
+            <td class="text-center">
+                <button id="btnOct" class="btn btn-lg btn-dark span-1">OCT</button>
+            </td>
+            <td class="text-center">
+                <button id="btnDec" class="btn btn-lg btn-dark span-1">DEC</button>
+            </td>
+            <td class="text-center">
+                <button id="btnHex" class="btn btn-lg btn-dark span-1">HEX</button>
+            </td>
+            <td class="text-center">
+                <button id="btnOpeningParentheses" class="btn btn-lg btn-dark span-1">(</button>
+            </td>
+            <td class="text-center">
+                <button id="btnClosingParentheses" class="btn btn-lg btn-dark span-1">)</button>
+            </td>
+            <td class="text-center">
+                <button id="btnModulo" class="btn btn-lg btn-dark span-1">%</button>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">
+                <button id="btnA" class="btn btn-lg btn-dark span-1">A</button>
+            </td>
+            <td class="text-center">
+                <button id="btnB" class="btn btn-lg btn-dark span-1">B</button>
+            </td>
+            <td class="text-center">
+                <button id="btnC" class="btn btn-lg btn-dark span-1">C</button>
+            </td>
+            <td class="text-center">
+                <button id="btnD" class="btn btn-lg btn-dark span-1">D</button>
+            </td>
+            <td class="text-center">
+                <button id="btnE" class="btn btn-lg btn-dark span-1">E</button>
+            </td>
+            <td class="text-center">
+                <button id="btnF" class="btn btn-lg btn-dark span-1">F</button>
+            </td>
+            <td class="text-center">
+                <button id="btnSet" class="btn btn-lg btn-dark span-1">SET</button>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">
+                <button id="btnNum7" class="btn btn-lg btn-secondary span-1">7</button>
+            </td>
+            <td class="text-center">
+                <button id="btnNum8" class="btn btn-lg btn-secondary span-1">8</button>
+            </td>
+            <td class="text-center">
+                <button id="btnNum9" class="btn btn-lg btn-secondary span-1">9</button>
+            </td>
+            <td class="text-center">
+                <button id="btnSquared" class="btn btn-lg btn-dark span-1">x<sup>2</sup></button>
+            </td>
+            <td class="text-center">
+                <button id="btnSquareRoot" class="btn btn-lg btn-dark span-1">√x</button>
+            </td>
+            <td class="text-center">
+                <button id="btnGateAND" class="btn btn-lg btn-dark span-1">AND</button>
+            </td>
+            <td class="text-center">
+                <button id="btnGateOR" class="btn btn-lg btn-dark span-1">OR</button>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">
+                <button id="btnNum4" class="btn btn-lg btn-secondary span-1">4</button>
+            </td>
+            <td class="text-center">
+                <button id="btnNum5" class="btn btn-lg btn-secondary span-1">5</button>
+            </td>
+            <td class="text-center">
+                <button id="btnNum6" class="btn btn-lg btn-secondary span-1">6</button>
+            </td>
+            <td class="text-center">
+                <button id="btnDivision" class="btn btn-lg btn-dark span-1">÷</button>
+            </td>
+            <td class="text-center">
+                <button id="btnRoot" class="btn btn-lg btn-dark span-1"><sup>n</sup>√x</button>
+            </td>
+            <td class="text-center">
+                <button id="btnGateNAND" class="btn btn-lg btn-dark span-1">NAND</button>
+            </td>
+            <td class="text-center">
+                <button id="btnGateNOR" class="btn btn-lg btn-dark span-1">NOR</button>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">
+                <button id="btnNum1" class="btn btn-lg btn-secondary span-1">1</button>
+            </td>
+            <td class="text-center">
+                <button id="btnNum2" class="btn btn-lg btn-secondary span-1">2</button>
+            </td>
+            <td class="text-center">
+                <button id="btnNum3" class="btn btn-lg btn-secondary span-1">3</button>
+            </td>
+            <td class="text-center">
+                <button id="btnMultiplication" class="btn btn-lg btn-dark span-1">×</button>
+            </td>
+            <td class="text-center">
+                <button id="btnExponentiation" class="btn btn-lg btn-dark span-1">x<sup>n</sup></button>
+            </td>
+            <td class="text-center">
+                <button id="btnGateXOR" class="btn btn-lg btn-dark span-1">XOR</button>
+            </td>
+            <td class="text-center">
+                <button id="btnGateNOT" class="btn btn-lg btn-dark span-1">NOT</button>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">
+                <button id="btnNegative" class="btn btn-lg btn-dark span-1">+/-</button>
+            </td>
+            <td class="text-center">
+                <button id="btnNum0" class="btn btn-lg btn-secondary span-1">0</button>
+            </td>
+            <td class="text-center">
+                <button id="btnComma" class="btn btn-lg btn-dark span-1">,</button>
+            </td>
+            <td class="text-center">
+                <button id="btnSubtraction" class="btn btn-lg btn-dark span-1">–</button>
+            </td>
+            <td class="text-center">
+                <button id="btnAddition" class="btn btn-lg btn-dark span-1">+</button>
+            </td>
+            <td class="text-center" colspan="2">
+                <button id="btnEquals" class="btn btn-lg btn-primary span-2">=</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
-<script src="bootstrap.min.js"></script>
-<script src="jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>

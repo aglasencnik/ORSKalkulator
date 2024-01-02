@@ -14,14 +14,16 @@
         <tbody>
         <tr>
             <td colspan="7">
-                <div class="alert alert-secondary text-end mb-0 pb-0 g-0">
-                    <p>
-                        <span id="lblDisplay"> 0 = </span>
-                    </p>
+                <div class="alert alert-secondary text-end mb-0 pb-0 g-0 calcDisplay">
+                    <div id="displayContainer" class="d-flex justify-content-between">
+                        <span id="lblDisplayNumSystem"></span>
+                        <span id="lblDisplay" class="ms-3"></span>
+                    </div>
                     <hr>
-                    <p class="my-0 py-0 gy-0">
-                        <span id="lblResult" class="my-0 py-0 main-calc-text">0</span>
-                    </p>
+                    <div id="resultContainer" class="d-flex justify-content-between my-0 py-0 gy-0">
+                        <span id="lblResultNumSystem"></span>
+                        <span id="lblResult" class="ms-4"></span>
+                    </div>
                 </div>
             </td>
         </tr>
@@ -42,15 +44,18 @@
         <tr>
             <td class="text-center" colspan="2">
                 <button id="btnArithmeticFile" class="btn btn-lg btn-dark span-2">Aritm. Dat.</button>
+                <input type="file" class="inputFile" accept=".txt" style="display: none">
             </td>
             <td class="text-center" colspan="2">
                 <button id="btnConvertFile" class="btn btn-lg btn-dark span-2">Pretv. Dat.</button>
+                <input type="file" class="inputFile" accept=".txt" style="display: none">
             </td>
             <td class="text-center" colspan="2">
                 <button id="btnLogicGatesFile" class="btn btn-lg btn-dark span-2">Log. Dat.</button>
+                <input type="file" class="inputFile" accept=".txt" style="display: none">
             </td>
             <td class="text-center">
-                <button id="btnBackSpace" class="btn btn-lg btn-dark span-1">⌫</button>
+                <button id="btnBackspace" class="btn btn-lg btn-dark span-1">⌫</button>
             </td>
         </tr>
         <tr>
@@ -73,7 +78,7 @@
                 <button id="btnClosingParentheses" class="btn btn-lg btn-dark span-1">)</button>
             </td>
             <td class="text-center">
-                <button id="btnModulo" class="btn btn-lg btn-dark span-1">%</button>
+                <button id="btnModulus" class="btn btn-lg btn-dark span-1">%</button>
             </td>
         </tr>
         <tr>
@@ -136,7 +141,7 @@
                 <button id="btnDivision" class="btn btn-lg btn-dark span-1">÷</button>
             </td>
             <td class="text-center">
-                <button id="btnRoot" class="btn btn-lg btn-dark span-1"><sup>n</sup>√x</button>
+                <button id="btnNthRoot" class="btn btn-lg btn-dark span-1"><sup>n</sup>√x</button>
             </td>
             <td class="text-center">
                 <button id="btnGateNAND" class="btn btn-lg btn-dark span-1">NAND</button>
@@ -192,8 +197,23 @@
     </table>
 </div>
 
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.min.js"></script>
+<!-- Libs -->
+<script src="js/libs/bootstrap.min.js"></script>
+<script src="js/libs/jquery.min.js"></script>
+
+<!-- Operations -->
+<script src="js/operations/arithmetic.js"></script>
+<script src="js/operations/conversion.js"></script>
+<script src="js/operations/logic.js"></script>
+
+<!-- Other Classes -->
+<script src="js/enums.js"></script>
+<script src="js/eventHandlers.js"></script>
+<script src="js/fileParser.js"></script>
+<script src="js/modeSwitcher.js"></script>
+<script src="js/parser.js"></script>
+
+<!-- Main Entry Point -->
 <script src="js/script.js"></script>
 </body>
 </html>

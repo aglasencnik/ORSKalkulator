@@ -271,8 +271,7 @@ class ConversionOperations {
      */
     static decToHex(input) {
         let inputValue = parseInt(input);
-        let arr = [];
-        let i = 0;
+        let hexArr = [];
 
         const casing = (num) => {
             const hexChars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
@@ -280,12 +279,11 @@ class ConversionOperations {
         };
 
         while (inputValue > 0) {
-            arr[i] = casing(inputValue % 16);
+            hexArr.push(casing(inputValue % 16));
             inputValue = Math.floor(inputValue / 16);
-            i++;
         }
 
-        return arr.reverse().join('').replace(/^0+/, '');
+        return hexArr.reverse().join('').replace(/^0+/, '');
     }
 
     /**
@@ -333,7 +331,47 @@ class ConversionOperations {
      * @returns {string} - Value but in the other numeral system.
      */
     static hexToOct(input) {
-        // TODO
+        let hexArr = input.split('');
+
+        const getVal = (hexDigit) => {
+            if (hexDigit >= '0' && hexDigit <= '9') {
+                return hexDigit - '0';
+            } else {
+                return hexDigit.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+            }
+        };
+
+        let hexLen = input.length;
+        let octLen = Math.floor(hexLen / 3) * 4;
+
+        // One hex digit left that is 4 bits or 2 oct digits.
+        if (hexLen % 3 === 1) {
+            octLen += 2;
+        } else if (hexLen % 3 === 2) { // 2 hex digits map to 3 oct digits
+            octLen += 3;
+        }
+
+        let octArr = new Array(octLen).fill(0);
+        let octIndex = octLen - 1;
+
+        for (let i = hexLen - 1; i - 3 >= 0; i -= 3) {
+            octArr[octIndex--] = getVal(hexArr[i]) % 8;
+            octArr[octIndex--] = Math.floor(getVal(hexArr[i]) / 8 + (getVal(hexArr[i - 1]) % 4) * 2);
+            octArr[octIndex--] = Math.floor(getVal(hexArr[i - 1]) / 4 + (getVal(hexArr[i - 2]) % 2) * 4);
+            octArr[octIndex--] = Math.floor(getVal(hexArr[i - 2]) / 2);
+        }
+
+        // if hex_len is not divisible by 4 we have to take care of the extra digits:
+        if (hexLen % 3 === 1) {
+            octArr[1] = getVal(hexArr[0]) % 8;
+            octArr[0] = Math.floor(getVal(hexArr[0]) / 8);
+        } else if (hexLen % 3 === 2) {
+            octArr[2] = getVal(hexArr[1]) % 8;
+            octArr[1] = Math.floor(getVal(hexArr[1]) / 8) + (getVal(hexArr[0]) % 4) * 4;
+            octArr[0] = Math.floor(getVal(hexArr[0]) / 4);
+        }
+
+        return octArr.join("").replace(/^0+/, '');
     }
 
     /**

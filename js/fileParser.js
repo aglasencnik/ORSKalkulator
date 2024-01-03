@@ -36,19 +36,14 @@ class FileParser {
             resultsContent += line;
 
             const numSystems = [NumeralSystems.BIN, NumeralSystems.OCT, NumeralSystems.DEC, NumeralSystems.HEX];
-            let elements = line.split(' ');
-
-            const binRegex = new RegExp("^[01]+$");
-            const octRegex = new RegExp("^[0-7]+$");
-            const decRegex = new RegExp("^[0-9]+$");
-            const hexRegex = new RegExp("^[0-9A-F]+$");
+            const elements = line.split(' ').filter(element => element);
 
             if (elements.length === 4 &&
                 numSystems.includes(elements[0]) &&
-                    ((elements[0] === NumeralSystems.BIN && binRegex.test(elements[1])) ||
-                    (elements[0] === NumeralSystems.OCT && octRegex.test(elements[1])) ||
-                    (elements[0] === NumeralSystems.DEC && decRegex.test(elements[1])) ||
-                    (elements[0] === NumeralSystems.HEX && hexRegex.test(elements[1]))) &&
+                    ((elements[0] === NumeralSystems.BIN && /^[01]+$/.test(elements[1])) ||
+                    (elements[0] === NumeralSystems.OCT && /^[0-7]+$/.test(elements[1])) ||
+                    (elements[0] === NumeralSystems.DEC && /^[0-9]+$/.test(elements[1])) ||
+                    (elements[0] === NumeralSystems.HEX && /^[0-9A-F]+$/.test(elements[1]))) &&
                 numSystems.includes(elements[2]) &&
                 elements[0] !== elements[2] &&
                 elements[3] === "=") {
@@ -57,6 +52,8 @@ class FileParser {
                 }
 
                 resultsContent += ConversionOperations.convert(elements[0], elements[2], elements[1])
+            } else {
+                resultsContent += " Izraz je sestavljen NAROBE!";
             }
 
             resultsContent += "\n";
@@ -71,15 +68,46 @@ class FileParser {
      * @param {string} fileContent - The content of the file.
      */
     static logicGates(fileContent) {
-        console.log("Logična vrata: " + fileContent);
-        // Handle file content here
         let resultsContent = "";
 
         for (const line of fileContent.split(/\r?\n/)) {
+            if (FileParser.isNullOrWhitespace(line)) {
+                resultsContent += line + "\n";
+                continue;
+            }
 
+            resultsContent += line;
+
+            const numSystems = [NumeralSystems.BIN, NumeralSystems.OCT, NumeralSystems.DEC, NumeralSystems.HEX];
+            const elements = line.split(' ').filter(element => element);
+
+            if (elements.length >= 4 &&
+                numSystems.includes(elements[0]) &&
+                numSystems.includes(elements[elements.length - 2]) &&
+                elements[elements.length - 1] === "=") {
+                if (resultsContent[resultsContent.length - 1] === "=") {
+                    resultsContent += " ";
+                }
+
+                const result = Parser.solveLogicGates(
+                    elements[0],
+                    elements[elements.length - 2],
+                    elements.slice(1, elements.length - 2).join(' ')
+                );
+
+                if (result !== null) {
+                    resultsContent += result;
+                } else {
+                    resultsContent += "Logični izračun NI postavljen pravilno, zato se je zgodila napaka!";
+                }
+            } else {
+                resultsContent += " Izraz je sestavljen NAROBE!";
+            }
+
+            resultsContent += "\n";
         }
 
-        this.downloadFile("rezultati-logičnih-vrat.txt", resultsContent);
+        FileParser.downloadFile("rezultati-logičnih-vrat.txt", resultsContent);
     }
 
     /**

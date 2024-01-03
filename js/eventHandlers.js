@@ -46,7 +46,7 @@ class EventHandlers {
      * Handles the click event for the Arithmetic File button.
      */
     static onBtnArithmeticFileClick() {
-        $("#btnArithmeticFile").next('.inputFile').off("change").on("change", function(e) {
+        $("#btnArithmeticFile").next('.inputFile').off("change").on("change", function (e) {
             FileParser.handleFileSelection(e, FileParser.arithmetic);
             $(this).val("");
         }).trigger('click');
@@ -56,7 +56,7 @@ class EventHandlers {
      * Handles the click event for the Convert File button.
      */
     static onBtnConvertFileClick() {
-        $("#btnConvertFile").next('.inputFile').off("change").on("change", function(e) {
+        $("#btnConvertFile").next('.inputFile').off("change").on("change", function (e) {
             FileParser.handleFileSelection(e, FileParser.numeralSystemConversion);
             $(this).val("");
         }).trigger('click');
@@ -66,7 +66,7 @@ class EventHandlers {
      * Handles the click event for the Logic Gates File button.
      */
     static onBtnLogicGatesFileClick() {
-        $("#btnLogicGatesFile").next('.inputFile').off("change").on("change", function(e) {
+        $("#btnLogicGatesFile").next('.inputFile').off("change").on("change", function (e) {
             FileParser.handleFileSelection(e, FileParser.logicGates);
             $(this).val("");
         }).trigger('click');
@@ -76,7 +76,31 @@ class EventHandlers {
      * Handles the click event for the Backspace button.
      */
     static onBtnBackspaceClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        let str = lblResult.html();
+
+        switch (calculatorMode) {
+            case CalculatorModes.ARITHMETIC:
+                break;
+            case CalculatorModes.CONVERSION:
+                str = str.slice(0, -1);
+                break;
+            case CalculatorModes.LOGICGATES:
+                if (str.endsWith(' ') && str.length > 0) {
+                    str = str.slice(0, -1);
+                    const lastSpace = str.lastIndexOf(' ');
+                    if (lastSpace !== -1) {
+                        str = str.slice(0, lastSpace);
+                    }
+                } else {
+                    str = str.slice(0, -1);
+                }
+                break;
+            default:
+                break;
+        }
+
+        lblResult.html(str);
     }
 
     /**
@@ -99,7 +123,16 @@ class EventHandlers {
                 ModeSwitcher.numeralSystemConversionConfirmed(NumeralSystems.BIN);
             }
         } else {
-            ModeSwitcher.logicGatesConfirmed(NumeralSystems.BIN);
+            if ($("#lblDisplay").html().length > 0) {
+                $("#btnBin").prop("disabled", true);
+                $("#btnOct").prop("disabled", false);
+                $("#btnDec").prop("disabled", false);
+                $("#btnHex").prop("disabled", false);
+                $("#btnEquals").prop("disabled", false);
+                $("#lblResultNumSystem").html(NumeralSystems.BIN);
+            } else {
+                ModeSwitcher.logicGatesConfirmed(NumeralSystems.BIN);
+            }
         }
     }
 
@@ -123,7 +156,16 @@ class EventHandlers {
                 ModeSwitcher.numeralSystemConversionConfirmed(NumeralSystems.OCT);
             }
         } else {
-            ModeSwitcher.logicGatesConfirmed(NumeralSystems.OCT);
+            if ($("#lblDisplay").html().length > 0) {
+                $("#btnBin").prop("disabled", false);
+                $("#btnOct").prop("disabled", true);
+                $("#btnDec").prop("disabled", false);
+                $("#btnHex").prop("disabled", false);
+                $("#btnEquals").prop("disabled", false);
+                $("#lblResultNumSystem").html(NumeralSystems.OCT);
+            } else {
+                ModeSwitcher.logicGatesConfirmed(NumeralSystems.OCT);
+            }
         }
     }
 
@@ -147,7 +189,16 @@ class EventHandlers {
                 ModeSwitcher.numeralSystemConversionConfirmed(NumeralSystems.DEC);
             }
         } else {
-            ModeSwitcher.logicGatesConfirmed(NumeralSystems.DEC);
+            if ($("#lblDisplay").html().length > 0) {
+                $("#btnBin").prop("disabled", false);
+                $("#btnOct").prop("disabled", false);
+                $("#btnDec").prop("disabled", true);
+                $("#btnHex").prop("disabled", false);
+                $("#btnEquals").prop("disabled", false);
+                $("#lblResultNumSystem").html(NumeralSystems.DEC);
+            } else {
+                ModeSwitcher.logicGatesConfirmed(NumeralSystems.DEC);
+            }
         }
     }
 
@@ -171,7 +222,16 @@ class EventHandlers {
                 ModeSwitcher.numeralSystemConversionConfirmed(NumeralSystems.HEX);
             }
         } else {
-            ModeSwitcher.logicGatesConfirmed(NumeralSystems.HEX);
+            if ($("#lblDisplay").html().length > 0) {
+                $("#btnBin").prop("disabled", false);
+                $("#btnOct").prop("disabled", false);
+                $("#btnDec").prop("disabled", false);
+                $("#btnHex").prop("disabled", true);
+                $("#btnEquals").prop("disabled", false);
+                $("#lblResultNumSystem").html(NumeralSystems.HEX);
+            } else {
+                ModeSwitcher.logicGatesConfirmed(NumeralSystems.HEX);
+            }
         }
     }
 
@@ -180,7 +240,7 @@ class EventHandlers {
      */
     static onBtnOpeningParenthesesClick() {
         const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "(");
+        lblResult.html(lblResult.html() + " ( ");
     }
 
     /**
@@ -188,7 +248,7 @@ class EventHandlers {
      */
     static onBtnClosingParenthesesClick() {
         const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + ")");
+        lblResult.html(lblResult.html() + " ) ");
     }
 
     /**
@@ -256,7 +316,6 @@ class EventHandlers {
     static onBtnSetClick() {
         switch (calculatorMode) {
             case CalculatorModes.ARITHMETIC:
-
                 break;
             case CalculatorModes.CONVERSION:
                 if ($("#lblResult").html().length > 0) {
@@ -268,7 +327,13 @@ class EventHandlers {
                 }
                 break;
             case CalculatorModes.LOGICGATES:
-
+                if ($("#lblResult").html().length > 0) {
+                    $("#lblDisplayNumSystem").html($("#lblResultNumSystem").html());
+                    $("#lblDisplay").html($("#lblResult").html());
+                    $("#lblResultNumSystem").html("");
+                    $("#lblResult").html("");
+                    ModeSwitcher.logicGatesSet();
+                }
                 break;
             default:
                 break;
@@ -306,7 +371,7 @@ class EventHandlers {
         const lblResult = $("#lblResult");
         const lblResultValue = lblResult.html();
         if (lblResult.length > 0 && !isNaN(lblResultValue[lblResultValue.length - 1])) {
-            lblResult.html(lblResultValue + "<sup>" + 2 +"</sup>");
+            lblResult.html(lblResultValue + "<sup>" + 2 + "</sup>");
         }
     }
 
@@ -321,14 +386,16 @@ class EventHandlers {
      * Handles the click event for the AND Gate button.
      */
     static onBtnGateANDClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        lblResult.html(lblResult.html() + " AND ");
     }
 
     /**
      * Handles the click event for the OR Gate button.
      */
     static onBtnGateORClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        lblResult.html(lblResult.html() + " OR ");
     }
 
     /**
@@ -359,7 +426,8 @@ class EventHandlers {
      * Handles the click event for the Division button.
      */
     static onBtnDivisionClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        lblResult.html(lblResult.html() + " ÷ ");
     }
 
     /**
@@ -373,14 +441,16 @@ class EventHandlers {
      * Handles the click event for the NAND Gate button.
      */
     static onBtnGateNANDClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        lblResult.html(lblResult.html() + " NAND ");
     }
 
     /**
      * Handles the click event for the NOR Gate button.
      */
     static onBtnGateNORClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        lblResult.html(lblResult.html() + " NOR ");
     }
 
     /**
@@ -411,7 +481,8 @@ class EventHandlers {
      * Handles the click event for the Multiplication button.
      */
     static onBtnMultiplicationClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        lblResult.html(lblResult.html() + " × ");
     }
 
     /**
@@ -425,14 +496,16 @@ class EventHandlers {
      * Handles the click event for the XOR Gate button.
      */
     static onBtnGateXORClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        lblResult.html(lblResult.html() + " XOR ");
     }
 
     /**
      * Handles the click event for the NOT Gate button.
      */
     static onBtnGateNOTClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        lblResult.html(lblResult.html() + " NOT ");
     }
 
     /**
@@ -447,7 +520,13 @@ class EventHandlers {
      */
     static onBtnNum0Click() {
         const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "0");
+        switch (calculatorMode) {
+            case CalculatorModes.ARITHMETIC:
+                break;
+            default:
+                lblResult.html(lblResult.html() + "0");
+                break;
+        }
     }
 
     /**
@@ -461,20 +540,45 @@ class EventHandlers {
      * Handles the click event for the Subtraction button.
      */
     static onBtnSubtractionClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        lblResult.html(lblResult.html() + " - ");
     }
 
     /**
      * Handles the click event for the Addition button.
      */
     static onBtnAdditionClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        lblResult.html(lblResult.html() + " + ");
     }
 
     /**
      * Handles the click event for the Equals button.
      */
     static onBtnEqualsClick() {
-        // TODO
+        const lblDisplayNumSystem = $("#lblDisplayNumSystem");
+        const lblResultNumSystem = $("#lblResultNumSystem");
+        const lblDisplay = $("#lblDisplay");
+        const lblResult = $("#lblResult");
+
+        switch (calculatorMode) {
+            case CalculatorModes.ARITHMETIC:
+                break;
+            case CalculatorModes.LOGICGATES:
+                const evalResult = Parser.solveLogicGates(lblDisplayNumSystem.html(), lblResultNumSystem.html(), lblDisplay.html());
+                if (evalResult !== null) {
+                    lblResult.html(evalResult);
+                } else {
+                    lblResultNumSystem.html(lblDisplayNumSystem.html());
+                    lblResult.html(lblDisplay.html());
+                    lblDisplayNumSystem.html("")
+                    lblDisplay.html("");
+                    ModeSwitcher.logicGatesConfirmed(lblResultNumSystem.html());
+                    alert("Logični izračun NI postavljen pravilno, zato se je zgodila napaka!");
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

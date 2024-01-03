@@ -21,7 +21,7 @@ class ConversionOperations {
                     case NumeralSystems.HEX:
                         return this.binToHex(input);
                     default:
-                        return "";
+                        return input;
                 }
             case NumeralSystems.OCT:
                 switch (outputNumSystem) {
@@ -32,7 +32,7 @@ class ConversionOperations {
                     case NumeralSystems.HEX:
                         return this.octToHex(input);
                     default:
-                        return "";
+                        return input;
                 }
             case NumeralSystems.DEC:
                 switch (outputNumSystem) {
@@ -43,7 +43,7 @@ class ConversionOperations {
                     case NumeralSystems.HEX:
                         return this.decToHex(input);
                     default:
-                        return "";
+                        return input;
                 }
             case NumeralSystems.HEX:
                 switch (outputNumSystem) {
@@ -54,10 +54,25 @@ class ConversionOperations {
                     case NumeralSystems.DEC:
                         return this.hexToDec(input);
                     default:
-                        return "";
+                        return input;
                 }
             default:
-                return "";
+                return input;
+        }
+    }
+
+    static isValidNumeralSystem(numSystem, input) {
+        switch (numSystem) {
+            case NumeralSystems.BIN:
+                return /^[01]+$/.test(input);
+            case NumeralSystems.OCT:
+                return /^[0-7]+$/.test(input);
+            case NumeralSystems.DEC:
+                return /^[0-9]+$/.test(input);
+            case NumeralSystems.HEX:
+                return /^[0-9A-F]+$/.test(input);
+            default:
+                return false;
         }
     }
 
@@ -81,7 +96,7 @@ class ConversionOperations {
             octArr.push(octVal.toString());
         }
 
-        return octArr.join('');
+        return octArr.join('').replace(/^0+/, '');
     }
 
     /**
@@ -103,7 +118,7 @@ class ConversionOperations {
             i++;
         }
 
-        return decVal.toString();
+        return decVal.toString().replace(/^0+/, '');
     }
 
     /**
@@ -146,7 +161,7 @@ class ConversionOperations {
             hexArr.push(casing(hexVal));
         }
 
-        return hexArr.join('');
+        return hexArr.join('').replace(/^0+/, '');
     }
 
     /**
@@ -176,7 +191,7 @@ class ConversionOperations {
             binArr.push(casing(octArr[i]));
         }
 
-        return binArr.reverse().join('');
+        return binArr.reverse().join('').replace(/^0+/, '');
     }
 
     /**
@@ -195,7 +210,7 @@ class ConversionOperations {
             i++;
         }
 
-        return decValue.toString();
+        return decValue.toString().replace(/^0+/, '');
     }
 
     /**
@@ -225,7 +240,7 @@ class ConversionOperations {
             i++;
         }
 
-        return arr.reverse().join('');
+        return arr.reverse().join('').replace(/^0+/, '');
     }
 
     /**
@@ -245,7 +260,7 @@ class ConversionOperations {
             i++;
         }
 
-        return arr.reverse().join('');
+        return arr.reverse().join('').replace(/^0+/, '');
     }
 
     /**
@@ -270,7 +285,7 @@ class ConversionOperations {
             i++;
         }
 
-        return arr.reverse().join('');
+        return arr.reverse().join('').replace(/^0+/, '');
     }
 
     /**
@@ -308,7 +323,7 @@ class ConversionOperations {
             binArr.push(casing(hexArr[i]));
         }
 
-        return binArr.reverse().join("");
+        return binArr.reverse().join("").replace(/^0+/, '');
     }
 
     /**
@@ -359,6 +374,6 @@ class ConversionOperations {
             i++;
         }
 
-        return decValue.toString();
+        return decValue.toString().replace(/^0+/, '');
     }
 }

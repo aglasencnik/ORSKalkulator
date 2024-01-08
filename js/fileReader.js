@@ -1,7 +1,7 @@
 /**
  * The FileParser class is responsible for parsing and reading files.
  */
-class FileParser {
+class FileReader {
     /**
      * Perform arithmetic operations on the given file content.
      *
@@ -28,7 +28,7 @@ class FileParser {
         let resultsContent = "";
 
         for (const line of fileContent.split(/\r?\n/)) {
-            if (FileParser.isNullOrWhitespace(line)) {
+            if (FileReader.isNullOrWhitespace(line)) {
                 resultsContent += line + "\n";
                 continue;
             }
@@ -59,7 +59,7 @@ class FileParser {
             resultsContent += "\n";
         }
 
-        FileParser.downloadFile("rezultati-pretvorb.txt", resultsContent);
+        FileReader.downloadFile("rezultati-pretvorb.txt", resultsContent);
     }
 
     /**
@@ -71,7 +71,7 @@ class FileParser {
         let resultsContent = "";
 
         for (const line of fileContent.split(/\r?\n/)) {
-            if (FileParser.isNullOrWhitespace(line)) {
+            if (FileReader.isNullOrWhitespace(line)) {
                 resultsContent += line + "\n";
                 continue;
             }
@@ -107,7 +107,7 @@ class FileParser {
             resultsContent += "\n";
         }
 
-        FileParser.downloadFile("rezultati-logičnih-vrat.txt", resultsContent);
+        FileReader.downloadFile("rezultati-logičnih-vrat.txt", resultsContent);
     }
 
     /**

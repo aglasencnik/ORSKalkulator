@@ -119,7 +119,7 @@ class EventHandlers {
      */
     static onBtnArithmeticFileClick() {
         $("#btnArithmeticFile").next('.inputFile').off("change").on("change", function (e) {
-            FileParser.handleFileSelection(e, FileParser.arithmetic);
+            FileReader.handleFileSelection(e, FileReader.arithmetic);
             $(this).val("");
         }).trigger('click');
     }
@@ -129,7 +129,7 @@ class EventHandlers {
      */
     static onBtnConvertFileClick() {
         $("#btnConvertFile").next('.inputFile').off("change").on("change", function (e) {
-            FileParser.handleFileSelection(e, FileParser.numeralSystemConversion);
+            FileReader.handleFileSelection(e, FileReader.numeralSystemConversion);
             $(this).val("");
         }).trigger('click');
     }
@@ -139,7 +139,7 @@ class EventHandlers {
      */
     static onBtnLogicGatesFileClick() {
         $("#btnLogicGatesFile").next('.inputFile').off("change").on("change", function (e) {
-            FileParser.handleFileSelection(e, FileParser.logicGates);
+            FileReader.handleFileSelection(e, FileReader.logicGates);
             $(this).val("");
         }).trigger('click');
     }

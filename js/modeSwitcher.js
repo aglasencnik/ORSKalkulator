@@ -27,7 +27,7 @@ class ModeSwitcher {
         $("#btnD").prop("disabled", true);
         $("#btnE").prop("disabled", true);
         $("#btnF").prop("disabled", true);
-        $("#btnSet").prop("disabled", false);
+        $("#btnSet").prop("disabled", true);
         $("#btnNum7").prop("disabled", false);
         $("#btnNum8").prop("disabled", false);
         $("#btnNum9").prop("disabled", false);
@@ -58,6 +58,39 @@ class ModeSwitcher {
         this.clearDisplay();
 
         calculatorMode = CalculatorModes.ARITHMETIC;
+    }
+
+    /**
+     * Disables the arithmetic commands.
+     */
+    static disableArithmetic() {
+        $("#btnClear").prop("disabled", false);
+        $("#btnBackspace").prop("disabled", true);
+        $("#btnOpeningParentheses").prop("disabled", true);
+        $("#btnClosingParentheses").prop("disabled", true);
+        $("#btnModulus").prop("disabled", true);
+        $("#btnSet").prop("disabled", true);
+        $("#btnNum7").prop("disabled", true);
+        $("#btnNum8").prop("disabled", true);
+        $("#btnNum9").prop("disabled", true);
+        $("#btnSquared").prop("disabled", true);
+        $("#btnSquareRoot").prop("disabled", true);
+        $("#btnNum4").prop("disabled", true);
+        $("#btnNum5").prop("disabled", true);
+        $("#btnNum6").prop("disabled", true);
+        $("#btnDivision").prop("disabled", true);
+        $("#btnNthRoot").prop("disabled", true);
+        $("#btnNum1").prop("disabled", true);
+        $("#btnNum2").prop("disabled", true);
+        $("#btnNum3").prop("disabled", true);
+        $("#btnMultiplication").prop("disabled", true);
+        $("#btnExponentiation").prop("disabled", true);
+        $("#btnNegative").prop("disabled", true);
+        $("#btnNum0").prop("disabled", true);
+        $("#btnComma").prop("disabled", true);
+        $("#btnSubtraction").prop("disabled", true);
+        $("#btnAddition").prop("disabled", true);
+        $("#btnEquals").prop("disabled", true);
     }
 
     /**

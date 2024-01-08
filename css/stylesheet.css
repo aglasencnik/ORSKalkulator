@@ -50,3 +50,13 @@ table {
 ::-webkit-scrollbar-thumb:hover {
     background: darkgrey;
 }
+
+.root :not(span):not(sup) {
+    display: inline-flex;
+}
+
+.root > span[data-type="content"] {
+    font-size: 1em;
+    border-top: 5px solid white;
+    padding-top: 2px;
+}

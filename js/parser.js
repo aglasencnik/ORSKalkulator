@@ -2,6 +2,16 @@
  * A class that handles parsing expressions.
  */
 class Parser {
+    static evaluateArithmeticFromCalc(display) {
+        console.log(display)
+        return null;
+    }
+
+    static evaluateArithmeticFromFile(fileContent) {
+        console.log(fileContent)
+        return null;
+    }
+
     /**
      * Solves logic gates based on the given input number system, output number system, and input expression.
      *

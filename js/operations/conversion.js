@@ -241,8 +241,6 @@ class ConversionOperations {
 
         for (let i = 0; i < input.length; i += 4) {
             const oct = input.substring(i, i + 4);
-            console.log(oct)
-            console.log(mappings[oct])
             hex += mappings[oct];
         }
 

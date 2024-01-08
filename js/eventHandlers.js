@@ -2,6 +2,77 @@
  * Represents event handlers.
  */
 class EventHandlers {
+    static operatorStack = [];
+
+    static onBtnNumClick(number) {
+        const lblResult = $("#lblResult");
+        switch (calculatorMode) {
+            case CalculatorModes.ARITHMETIC:
+                let currentElement = lblResult;
+                if (EventHandlers.operatorStack.length > 0) {
+                    let stackElement = EventHandlers.operatorStack[EventHandlers.operatorStack.length - 1];
+                    currentElement = stackElement.element.children().eq(stackElement.childNum - 1);
+                }
+
+                let lastChild = currentElement;
+                if (currentElement.children().length > 0) {
+                    lastChild = currentElement.children().last();
+                }
+
+                if (lastChild.data("type") === "number") {
+                    if (number === "." && !lastChild.html().includes(".")) {
+                        lastChild.html((lastChild.html() === "" ? "0" : lastChild.html()) + number);
+                        lastChild.attr("data-value", lastChild.html());
+                    } else if (number !== "." && !(number === "0" && lastChild.html() === "0")) {
+                        lastChild.html(lastChild.html() + number.toString());
+                        lastChild.attr("data-value", lastChild.html());
+                    }
+                } else {
+                    if (number === ".") {
+                        const newElement = $("<span>")
+                            .attr("data-type", "number")
+                            .attr("data-value", "0.")
+                            .html("0.");
+                        currentElement.append(newElement);
+                    } else {
+                        const newElement = $("<span>")
+                            .attr("data-type", "number")
+                            .attr("data-value", number.toString())
+                            .html(number.toString());
+                        currentElement.append(newElement);
+                    }
+                }
+                break;
+            default:
+                lblResult.html(lblResult.html() + number);
+                break;
+        }
+    }
+
+    static onBasicOperatorClick(opValue, opHtml, allowOtherModes = false) {
+        const lblResult = $("#lblResult");
+        switch (calculatorMode) {
+            case CalculatorModes.ARITHMETIC:
+                if (EventHandlers.operatorStack.length === 0) {
+                    lblResult.append($("<span>").attr("data-type", "operator").attr("data-value", opValue).html(opHtml));
+                } else {
+                    let currentElement = lblResult;
+                    if (EventHandlers.operatorStack.length > 0) {
+                        let stackElement = EventHandlers.operatorStack[EventHandlers.operatorStack.length - 1];
+                        currentElement = stackElement.element.children().eq(stackElement.childNum - 1);
+                    }
+
+                    currentElement.append(
+                        $("<span>").attr("data-type", "operator").attr("data-value", opValue).html(opHtml)
+                    );
+                }
+                break;
+            default:
+                lblResult.html(lblResult.html() + opHtml);
+                break;
+        }
+    }
+
     /**
      * Handles the click event for the Arithmetic button.
      */
@@ -30,6 +101,7 @@ class EventHandlers {
         switch (calculatorMode) {
             case CalculatorModes.ARITHMETIC:
                 ModeSwitcher.arithmetic();
+                EventHandlers.operatorStack = [];
                 break;
             case CalculatorModes.CONVERSION:
                 ModeSwitcher.numeralSystemConversion();
@@ -81,9 +153,54 @@ class EventHandlers {
 
         switch (calculatorMode) {
             case CalculatorModes.ARITHMETIC:
+                if (EventHandlers.operatorStack.length > 0) {
+                    let stackElement = EventHandlers.operatorStack[EventHandlers.operatorStack.length - 1];
+                    let currentElement = stackElement.element.children().eq(stackElement.childNum - 1);
+                    let lastChild = currentElement.children().last();
+
+                    if (lastChild.length) {
+                        if (lastChild.data("type") === "number") {
+                            let text = lastChild.text();
+                            if (text.length > 1) {
+                                lastChild.text(text.slice(0, -1));
+                                lastChild.attr("data-value", lastChild.text());
+                            } else {
+                                lastChild.remove();
+                            }
+                        } else {
+                            lastChild.remove();
+                        }
+                    } else {
+                        const stackElement = EventHandlers.operatorStack.find(el => el.element.is(currentElement.parent()));
+                        if (stackElement) {
+                            EventHandlers.operatorStack = EventHandlers.operatorStack.filter(el => el !== stackElement);
+
+                            if (EventHandlers.operatorStack.length === 0) {
+                                $("#btnSet").prop("disabled", true);
+                            }
+                        }
+                        currentElement.parent().remove();
+                    }
+                } else {
+                    const lastChild = lblResult.children().last();
+                    if (lastChild.length) {
+                        if (lastChild.data("type") === "number") {
+                            let text = lastChild.text();
+                            if (text.length > 1) {
+                                lastChild.text(text.slice(0, -1));
+                                lastChild.attr("data-value", lastChild.text());
+                            } else {
+                                lastChild.remove();
+                            }
+                        } else {
+                            lastChild.remove();
+                        }
+                    }
+                }
                 break;
             case CalculatorModes.CONVERSION:
                 str = str.slice(0, -1);
+                lblResult.html(str);
                 break;
             case CalculatorModes.LOGICGATES:
                 if (str.endsWith(' ') && str.length > 0) {
@@ -93,14 +210,14 @@ class EventHandlers {
                         str = str.slice(0, lastSpace);
                     }
                 } else {
+                    let str = lblResult.html();
                     str = str.slice(0, -1);
                 }
+                lblResult.html(str);
                 break;
             default:
                 break;
         }
-
-        lblResult.html(str);
     }
 
     /**
@@ -239,27 +356,21 @@ class EventHandlers {
      * Handles the click event for the '(' button.
      */
     static onBtnOpeningParenthesesClick() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + " ( ");
+        EventHandlers.onBasicOperatorClick("(", " ( ", true);
     }
 
     /**
      * Handles the click event for the ')' button.
      */
     static onBtnClosingParenthesesClick() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + " ) ");
+        EventHandlers.onBasicOperatorClick(")", " ) ", true);
     }
 
     /**
      * Handles the click event for the Modulus button.
      */
     static onBtnModulusClick() {
-        const lblResult = $("#lblResult");
-        const lblResultValue = lblResult.html();
-        if (lblResult.length > 0 && !isNaN(lblResultValue[lblResultValue.length - 1])) {
-            lblResult.html(lblResultValue + " % ");
-        }
+        EventHandlers.onBasicOperatorClick("%", " % ");
     }
 
     /**
@@ -316,6 +427,10 @@ class EventHandlers {
     static onBtnSetClick() {
         switch (calculatorMode) {
             case CalculatorModes.ARITHMETIC:
+                EventHandlers.operatorStack.pop();
+                if (EventHandlers.operatorStack.length === 0) {
+                    $("#btnSet").prop("disabled", true);
+                }
                 break;
             case CalculatorModes.CONVERSION:
                 if ($("#lblResult").html().length > 0) {
@@ -344,24 +459,21 @@ class EventHandlers {
      * Handles the click event for the 7 button.
      */
     static onBtnNum7Click() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "7");
+        EventHandlers.onBtnNumClick("7");
     }
 
     /**
      * Handles the click event for the 8 button.
      */
     static onBtnNum8Click() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "8");
+        EventHandlers.onBtnNumClick("8");
     }
 
     /**
      * Handles the click event for the 9 button.
      */
     static onBtnNum9Click() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "9");
+        EventHandlers.onBtnNumClick("9");
     }
 
     /**
@@ -369,9 +481,30 @@ class EventHandlers {
      */
     static onBtnSquaredClick() {
         const lblResult = $("#lblResult");
-        const lblResultValue = lblResult.html();
-        if (lblResult.length > 0 && !isNaN(lblResultValue[lblResultValue.length - 1])) {
-            lblResult.html(lblResultValue + "<sup>" + 2 + "</sup>");
+        const powElement = $("<span>").attr("data-type", "advanced-operator").attr("data-value", "pow");
+        const exponent = $("<sup>").attr("data-type", "exponent").attr("data-value", "2");
+        exponent.append($("<span>").attr("data-type", "number").attr("data-value", "2").html("2"));
+        powElement.append(exponent);
+
+        let currentElement = lblResult;
+        if (EventHandlers.operatorStack.length > 0) {
+            let stackElement = EventHandlers.operatorStack[EventHandlers.operatorStack.length - 1];
+            currentElement = stackElement.element.children().eq(stackElement.childNum - 1);
+        }
+
+        const lastChild = currentElement.children().last();
+        if (lastChild.data("type") === "number" || lastChild.data("value") === ")") {
+            currentElement.append(powElement);
+        } else if (lastChild.data("value") === "pow") {
+            const allChildren = currentElement.children();
+            for (let i = allChildren.length - 1; i >= 0; i--) {
+                if (allChildren.eq(i).data("type") === "number") {
+                    allChildren.eq(i).before($("<span>").attr("data-type", "operator").attr("data-value", "(").html(" ( "));
+                    break;
+                }
+            }
+            currentElement.append($("<span>").attr("data-type", "operator").attr("data-value", ")").html(" ) "));
+            currentElement.append(powElement);
         }
     }
 
@@ -379,7 +512,24 @@ class EventHandlers {
      * Handles the click event for the Square Root button.
      */
     static onBtnSquareRootClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        const sqrtElement = $("<span>").addClass("root").attr("data-type", "advanced-operator").attr("data-value", "nth-root");
+        const indexElement = $("<span>").attr("data-type", "index").attr("data-value", "2");
+        const contentElement = $("<span>").attr("data-type", "content");
+        indexElement.append($("<span>").attr("data-type", "number").attr("data-value", "2").html(""));
+        sqrtElement.append(indexElement);
+        sqrtElement.append("&radic;");
+        sqrtElement.append(contentElement);
+
+        if (EventHandlers.operatorStack.length === 0) {
+            lblResult.append(sqrtElement);
+        } else {
+            let stackElement = EventHandlers.operatorStack[EventHandlers.operatorStack.length - 1];
+            stackElement.element.children().eq(stackElement.childNum - 1).append(sqrtElement);
+        }
+
+        EventHandlers.operatorStack.push({element: sqrtElement, childNum: 2});
+        $("#btnSet").prop("disabled", false);
     }
 
     /**
@@ -402,39 +552,52 @@ class EventHandlers {
      * Handles the click event for the 4 button.
      */
     static onBtnNum4Click() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "4");
+        EventHandlers.onBtnNumClick("4");
     }
 
     /**
      * Handles the click event for the 5 button.
      */
     static onBtnNum5Click() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "5");
+        EventHandlers.onBtnNumClick("5");
     }
 
     /**
      * Handles the click event for the 6 button.
      */
     static onBtnNum6Click() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "6");
+        EventHandlers.onBtnNumClick("6");
     }
 
     /**
      * Handles the click event for the Division button.
      */
     static onBtnDivisionClick() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + " ÷ ");
+        EventHandlers.onBasicOperatorClick("/", " ÷ ");
     }
 
     /**
      * Handles the click event for the n-th Root button.
      */
     static onBtnNthRootClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        const rootElement = $("<span>").addClass("root").attr("data-type", "advanced-operator").attr("data-value", "nth-root");
+        const indexElement = $("<sup>").attr("data-type", "index");
+        const contentElement = $("<span>").attr("data-type", "content");
+        rootElement.append(indexElement);
+        rootElement.append("&radic;");
+        rootElement.append(contentElement);
+
+        if (EventHandlers.operatorStack.length === 0) {
+            lblResult.append(rootElement);
+        } else {
+            let stackElement = EventHandlers.operatorStack[EventHandlers.operatorStack.length - 1];
+            stackElement.element.children().eq(stackElement.childNum - 1).append(rootElement);
+        }
+
+        EventHandlers.operatorStack.push({element: rootElement, childNum: 2});
+        EventHandlers.operatorStack.push({element: rootElement, childNum: 1});
+        $("#btnSet").prop("disabled", false);
     }
 
     /**
@@ -457,39 +620,68 @@ class EventHandlers {
      * Handles the click event for the 1 button.
      */
     static onBtnNum1Click() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "1");
+        EventHandlers.onBtnNumClick("1");
     }
 
     /**
      * Handles the click event for the 2 button.
      */
     static onBtnNum2Click() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "2");
+        EventHandlers.onBtnNumClick("2");
     }
 
     /**
      * Handles the click event for the 3 button.
      */
     static onBtnNum3Click() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + "3");
+        EventHandlers.onBtnNumClick("3");
     }
 
     /**
      * Handles the click event for the Multiplication button.
      */
     static onBtnMultiplicationClick() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + " × ");
+        EventHandlers.onBasicOperatorClick("*", " × ");
     }
 
     /**
      * Handles the click event for the Exponentiation button.
      */
     static onBtnExponentiationClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        const powElement = $("<span>").attr("data-type", "advanced-operator").attr("data-value", "pow");
+        const exponent = $("<sup>").attr("data-type", "exponent");
+        powElement.append(exponent);
+
+        let currentElement = lblResult;
+        if (EventHandlers.operatorStack.length > 0) {
+            let stackElement = EventHandlers.operatorStack[EventHandlers.operatorStack.length - 1];
+            currentElement = stackElement.element.children().eq(stackElement.childNum - 1);
+        }
+
+        const lastChild = currentElement.children().last();
+        let opCreated = false;
+
+        if (lastChild.data("type") === "number" || lastChild.data("value") === ")") {
+            currentElement.append(powElement);
+            opCreated = true;
+        } else if (lastChild.data("value") === "pow") {
+            const allChildren = currentElement.children();
+            for (let i = allChildren.length - 1; i >= 0; i--) {
+                if (allChildren.eq(i).data("type") === "number") {
+                    allChildren.eq(i).before($("<span>").attr("data-type", "operator").attr("data-value", "(").html(" ( "));
+                    break;
+                }
+            }
+            currentElement.append($("<span>").attr("data-type", "operator").attr("data-value", ")").html(" ) "));
+            currentElement.append(powElement);
+            opCreated = true;
+        }
+
+        if (opCreated) {
+            EventHandlers.operatorStack.push({element: powElement, childNum: 1});
+            $("#btnSet").prop("disabled", false);
+        }
     }
 
     /**
@@ -512,44 +704,48 @@ class EventHandlers {
      * Handles the click event for the Negative button.
      */
     static onBtnNegativeClick() {
-        // TODO
+        const lblResult = $("#lblResult");
+        const lastChild = lblResult.children().last();
+
+        if (lastChild.data("type") === "number") {
+            let currentValue = lastChild.html();
+            if (currentValue.startsWith("(") && currentValue.endsWith(")")) {
+                currentValue = currentValue.substring(2, currentValue.length - 1);
+            } else {
+                currentValue = "(-" + currentValue + ")";
+            }
+
+            lastChild.html(currentValue);
+            lastChild.attr("data-value", currentValue);
+        }
     }
 
     /**
      * Handles the click event for the 0 button.
      */
     static onBtnNum0Click() {
-        const lblResult = $("#lblResult");
-        switch (calculatorMode) {
-            case CalculatorModes.ARITHMETIC:
-                break;
-            default:
-                lblResult.html(lblResult.html() + "0");
-                break;
-        }
+        EventHandlers.onBtnNumClick("0");
     }
 
     /**
      * Handles the click event for the Comma button.
      */
     static onBtnCommaClick() {
-        // TODO
+        EventHandlers.onBtnNumClick(".");
     }
 
     /**
      * Handles the click event for the Subtraction button.
      */
     static onBtnSubtractionClick() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + " - ");
+        EventHandlers.onBasicOperatorClick("-", " – ");
     }
 
     /**
      * Handles the click event for the Addition button.
      */
     static onBtnAdditionClick() {
-        const lblResult = $("#lblResult");
-        lblResult.html(lblResult.html() + " + ");
+        EventHandlers.onBasicOperatorClick("+", " + ");
     }
 
     /**
@@ -563,6 +759,14 @@ class EventHandlers {
 
         switch (calculatorMode) {
             case CalculatorModes.ARITHMETIC:
+                const result = Parser.evaluateArithmeticFromCalc(lblResult.html());
+                if (result !== null) {
+                    lblDisplay.html(lblResult.html());
+                    lblResult.html(result);
+                    ModeSwitcher.disableArithmetic();
+                } else {
+                    alert("Račun NI postavljen pravilno, zato ga ni mogoče izračunati!");
+                }
                 break;
             case CalculatorModes.LOGICGATES:
                 const evalResult = Parser.solveLogicGates(lblDisplayNumSystem.html(), lblResultNumSystem.html(), lblDisplay.html());

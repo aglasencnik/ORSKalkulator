@@ -11,3 +11,8 @@ const CalculatorModes = {
     CONVERSION: "Conversion",
     LOGICGATES: "LogicGates"
 };
+
+const AdvancedOperators = {
+    ROOT: "nth-root",
+    EXPONENTIAL: "pow"
+}

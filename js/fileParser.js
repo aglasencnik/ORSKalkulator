@@ -1,22 +1,48 @@
 /**
  * The FileParser class is responsible for parsing and reading files.
  */
-class FileReader {
+class FileParser {
     /**
      * Perform arithmetic operations on the given file content.
      *
      * @param {string} fileContent - The content of the file.
      */
     static arithmetic(fileContent) {
-        console.log("Aritmetika: " + fileContent);
-        // Handle file content here
         let resultsContent = "";
 
         for (const line of fileContent.split(/\r?\n/)) {
+            if (FileParser.isNullOrWhitespace(line)) {
+                resultsContent += line + "\n";
+                continue;
+            }
 
+            resultsContent += line;
+
+            const elements = line.split(' ').filter(element => element);
+
+            if (elements.length >= 2 &&
+                elements[elements.length - 1] === "=" &&
+                /^[0-9+\-*/%(),. \s]*(\b(pow|root)\b[0-9+\-*/%(),. \s]*)*=$/.test(line)) {
+                if (resultsContent[resultsContent.length - 1] === "=") {
+                    resultsContent += " ";
+                }
+
+                elements.pop();
+                const result = Parser.evaluateArithmeticFromFile(elements);
+
+                if (result !== null) {
+                    resultsContent += result;
+                } else {
+                    resultsContent += "Aritmetični izračun NI postavljen pravilno, zato se je zgodila napaka!";
+                }
+            } else {
+                resultsContent += " Izraz je sestavljen NAROBE!";
+            }
+
+            resultsContent += "\n";
         }
 
-        this.downloadFile("rezultati-aritmetike.txt", resultsContent);
+        FileParser.downloadFile("rezultati-aritmetika.txt", resultsContent);
     }
 
     /**
@@ -28,7 +54,7 @@ class FileReader {
         let resultsContent = "";
 
         for (const line of fileContent.split(/\r?\n/)) {
-            if (FileReader.isNullOrWhitespace(line)) {
+            if (FileParser.isNullOrWhitespace(line)) {
                 resultsContent += line + "\n";
                 continue;
             }
@@ -59,7 +85,7 @@ class FileReader {
             resultsContent += "\n";
         }
 
-        FileReader.downloadFile("rezultati-pretvorb.txt", resultsContent);
+        FileParser.downloadFile("rezultati-pretvorb.txt", resultsContent);
     }
 
     /**
@@ -71,7 +97,7 @@ class FileReader {
         let resultsContent = "";
 
         for (const line of fileContent.split(/\r?\n/)) {
-            if (FileReader.isNullOrWhitespace(line)) {
+            if (FileParser.isNullOrWhitespace(line)) {
                 resultsContent += line + "\n";
                 continue;
             }
@@ -107,11 +133,11 @@ class FileReader {
             resultsContent += "\n";
         }
 
-        FileReader.downloadFile("rezultati-logičnih-vrat.txt", resultsContent);
+        FileParser.downloadFile("rezultati-logičnih-vrat.txt", resultsContent);
     }
 
     /**
-     * Reads the contents of a file using FileReader API.
+     * Reads the contents of a file using FileParser API.
      * @param {File} file - The file to read.
      * @return {Promise} - A promise that resolves with the content of the file as a string, or rejects with an error.
      */

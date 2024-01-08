@@ -7,8 +7,8 @@ class Parser {
         return null;
     }
 
-    static evaluateArithmeticFromFile(fileContent) {
-        console.log(fileContent)
+    static evaluateArithmeticFromFile(tokens) {
+        console.log(tokens)
         return null;
     }
 

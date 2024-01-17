@@ -1,3 +1,6 @@
+/**
+ * Class representing an arithmetic expression evaluator.
+ */
 class ArithmeticEvaluator {
     #tokenTypes = {
         DELIMITER: 1,
@@ -16,6 +19,15 @@ class ArithmeticEvaluator {
         this.#errorMessage = "";
     }
 
+    /**
+     * Evaluates the given expression and returns the result or an error message.
+     *
+     * @param {string} expression - The expression to evaluate.
+     * @returns {object} - An object with properties: Success, Result, Error.
+     *          - Success: A boolean indicating whether the evaluation was successful.
+     *          - Result: The numeric result of the evaluation, rounded to 3 decimal places.
+     *          - Error: An error message if the evaluation failed, or an empty string if successful.
+     */
     evaluateExpression(expression) {
         this.#errorMessage = "";
         this.#expression = expression;
@@ -44,6 +56,11 @@ class ArithmeticEvaluator {
         };
     }
 
+    /**
+     * Evaluates the expression using the given algorithm.
+     *
+     * @returns {number} - The result of the evaluated expression.
+     */
     #evalExp1() {
         let result = this.#evalExp2();
 
@@ -62,6 +79,11 @@ class ArithmeticEvaluator {
         return result;
     }
 
+    /**
+     * Evaluates an arithmetic expression consisting of multiplication, division, and modulus operations.
+     *
+     * @return {number} The result of evaluating the arithmetic expression.
+     */
     #evalExp2() {
         let result = this.#evalExp3();
 
@@ -82,6 +104,11 @@ class ArithmeticEvaluator {
         return result;
     }
 
+    /**
+     * Evaluates the mathematical expression for the given token and token type.
+     *
+     * @returns {number} The result of the evaluation.
+     */
     #evalExp3() {
         const token = this.#token;
 
@@ -98,6 +125,11 @@ class ArithmeticEvaluator {
         return result;
     }
 
+    /**
+     * Evaluates the expression and returns the result.
+     *
+     * @returns {number} The result of evaluating the expression.
+     */
     #evalExp4() {
         let result = this.#evalExp5();
 
@@ -110,6 +142,11 @@ class ArithmeticEvaluator {
         return result;
     }
 
+    /**
+     * Evaluates a mathematical expression represented by a token stream.
+     *
+     * @returns {number} The result of the evaluated expression.
+     */
     #evalExp5() {
         let result = 0;
 
@@ -132,6 +169,9 @@ class ArithmeticEvaluator {
         return result;
     }
 
+    /**
+     * Retrieves the next token from the expression string.
+     */
     #getToken() {
         this.#token = '';
         this.#tokenType = 0;

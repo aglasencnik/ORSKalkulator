@@ -761,9 +761,13 @@ class EventHandlers {
             case CalculatorModes.ARITHMETIC:
                 const result = Parser.evaluateArithmeticFromCalc(lblResult.html());
                 if (result !== null) {
-                    lblDisplay.html(lblResult.html());
-                    lblResult.html(result);
-                    ModeSwitcher.disableArithmetic();
+                    if (result.Success) {
+                        lblDisplay.html(lblResult.html());
+                        lblResult.html(result.Result);
+                        ModeSwitcher.disableArithmetic();
+                    } else {
+                        alert(result.Error);
+                    }
                 } else {
                     alert("Račun NI postavljen pravilno, zato ga ni mogoče izračunati!");
                 }

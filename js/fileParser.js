@@ -22,16 +22,20 @@ class FileParser {
 
             if (elements.length >= 2 &&
                 elements[elements.length - 1] === "=" &&
-                /^[0-9+\-*/%(),. \s]*(\b(pow|root)\b[0-9+\-*/%(),. \s]*)*=$/.test(line)) {
+                /^[0-9+\-*/%(),.^ \s]*(\b(root)\b[0-9+\-*/%(),.^ \s]*)*=$/.test(line)) {
                 if (resultsContent[resultsContent.length - 1] === "=") {
                     resultsContent += " ";
                 }
 
                 elements.pop();
-                const result = Parser.evaluateArithmeticFromFile(elements);
+                const result = Parser.evaluateArithmeticFromFile(elements.join(''));
 
                 if (result !== null) {
-                    resultsContent += result;
+                    if (result.Success) {
+                        resultsContent += result.Result;
+                    } else {
+                        resultsContent += result.Error;
+                    }
                 } else {
                     resultsContent += "Aritmetični izračun NI postavljen pravilno, zato se je zgodila napaka!";
                 }

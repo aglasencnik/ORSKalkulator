@@ -2,14 +2,69 @@
  * A class that handles parsing expressions.
  */
 class Parser {
-    static evaluateArithmeticFromCalc(display) {
-        console.log(display)
-        return null;
+    /**
+     * Evaluates arithmetic expression from the given HTML using a DOMParser.
+     *
+     * @param {string} html - The HTML string representing the arithmetic expression.
+     * @return {object} - The result of the evaluated arithmetic expression.
+     */
+    static evaluateArithmeticFromCalc(html) {
+        const domParser = new DOMParser();
+        const doc = domParser.parseFromString(html, 'text/html');
+
+        const processElement = (element) => {
+            let expression = "";
+
+            for (const childElement of element.children) {
+                const dataType = childElement.getAttribute("data-type");
+                const dataValue = childElement.getAttribute("data-value");
+
+                if (dataType === "number" || dataType === "operator") {
+                    expression += dataValue;
+                } else if (dataType === "advanced-operator") {
+                    if (dataValue === "pow") {
+                        const exponent = childElement.firstElementChild;
+                        if (exponent) {
+                            expression += "^(";
+                            expression += processElement(exponent);
+                            expression += ")";
+                        }
+                    } else if (dataValue === "nth-root") {
+                        const index = childElement.firstElementChild;
+                        if (index) {
+                            const content = index.nextElementSibling;
+                            if (content) {
+                                expression += processElement(content);
+                                expression += "^(1/";
+                                expression += processElement(index);
+                                expression += ")";
+                            }
+                        }
+                    }
+                }
+            }
+
+            return expression;
+        }
+
+        const evaluator = new ArithmeticEvaluator();
+        return evaluator.evaluateExpression(processElement(doc.body));
     }
 
-    static evaluateArithmeticFromFile(tokens) {
-        console.log(tokens)
-        return null;
+    /**
+     * Evaluates the arithmetic expression from a file.
+     *
+     * @param {string} expression - The arithmetic expression to be evaluated.
+     * @return {object} - The result of evaluating the expression.
+     */
+    static evaluateArithmeticFromFile(expression) {
+        const evaluator = new ArithmeticEvaluator();
+        expression = Parser.simplifyExpression(expression);
+        return evaluator.evaluateExpression(expression);
+    }
+
+    static simplifyExpression(expression) {
+        return expression;
     }
 
     /**

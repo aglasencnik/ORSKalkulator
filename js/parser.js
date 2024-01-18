@@ -60,11 +60,35 @@ class Parser {
     static evaluateArithmeticFromFile(expression) {
         const evaluator = new ArithmeticEvaluator();
         expression = Parser.simplifyExpression(expression);
+        console.log(expression)
         return evaluator.evaluateExpression(expression);
     }
 
+    /**
+     * Simplifies the given expression by replacing all occurrences of root() function with its simplified form.
+     * The root() function is in the form root(index, content), where index is the index of the root and content is the expression within the root.
+     *
+     * @param {string} expression - The expression to simplify.
+     * @return {string} - The simplified expression.
+     */
     static simplifyExpression(expression) {
-        return expression;
+        const rootRegex = /root\(\s*([^,]+)\s*,\s*([^)]+)\s*\)/g;
+
+        let match;
+        const matches = [];
+
+        while((match = rootRegex.exec(expression)) !== null) {
+            matches.push(match);
+        }
+
+        let simplifiedExpression = expression;
+        for(const match of matches) {
+            const index = match[1];
+            const content = match[2];
+            simplifiedExpression = simplifiedExpression.replace(match[0], `((${content})^(1/${index}))`);
+        }
+
+        return simplifiedExpression;
     }
 
     /**

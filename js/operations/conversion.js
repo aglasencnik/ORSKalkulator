@@ -378,11 +378,11 @@ class ConversionOperations {
         let octArr = new Array(octLen).fill(0);
         let octIndex = octLen - 1;
 
-        for (let i = hexLen - 1; i - 3 >= 0; i -= 3) {
-            octArr[octIndex--] = getVal(hexArr[i]) % 8;
-            octArr[octIndex--] = Math.floor(getVal(hexArr[i]) / 8 + (getVal(hexArr[i - 1]) % 4) * 2);
-            octArr[octIndex--] = Math.floor(getVal(hexArr[i - 1]) / 4 + (getVal(hexArr[i - 2]) % 2) * 4);
-            octArr[octIndex--] = Math.floor(getVal(hexArr[i - 2]) / 2);
+        for (let i = hexLen - 1; i >= 0; i -= 3) {
+            octArr[octIndex--] = getVal(i >= 0 ? hexArr[i] : 0) % 8;
+            octArr[octIndex--] = Math.floor(getVal(i >= 0 ? hexArr[i] : 0) / 8 + (getVal(i - 1 >= 0 ? hexArr[i - 1] : 0) % 4) * 2);
+            octArr[octIndex--] = Math.floor(getVal(i - 1 >= 0 ? hexArr[i - 1] : 0) / 4 + (getVal(i - 2 >= 0 ? hexArr[i - 2] : 0) % 2) * 4);
+            octArr[octIndex--] = Math.floor(getVal(i - 2 >= 0 ? hexArr[i - 2] : 0) / 2);
         }
 
         // if hex_len is not divisible by 4 we have to take care of the extra digits:

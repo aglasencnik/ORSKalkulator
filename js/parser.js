@@ -60,7 +60,6 @@ class Parser {
     static evaluateArithmeticFromFile(expression) {
         const evaluator = new ArithmeticEvaluator();
         expression = Parser.simplifyExpression(expression);
-        console.log(expression)
         return evaluator.evaluateExpression(expression);
     }
 

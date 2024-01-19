@@ -210,7 +210,6 @@ class EventHandlers {
                         str = str.slice(0, lastSpace);
                     }
                 } else {
-                    let str = lblResult.html();
                     str = str.slice(0, -1);
                 }
                 lblResult.html(str);
